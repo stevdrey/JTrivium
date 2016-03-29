@@ -70,8 +70,11 @@ public class FileEncrypt implements Closeable {
 
     public void encrypt(TypeEncode encode) throws IOException {
         int readBytes = 0;
+        int length= this.reader.available();
+        
         StringBuilder appenable= new StringBuilder();
-        byte[] buffer = new byte[this.bufferedSize];
+        
+        byte[] buffer = new byte[length >= this.bufferedSize ? this.bufferedSize : length];
         
         do {
             readBytes = reader.read(buffer);
@@ -87,13 +90,13 @@ public class FileEncrypt implements Closeable {
                         break;
                         
                     case BINARY:
-                        writer.writeUTF(this.binaryEncode(buffer, appenable).toString());
+                        writer.write(this.binaryEncode(buffer, appenable).toString().getBytes());
                         appenable.delete(0, appenable.length());
                         
                         break;
                         
                     case HEX:
-                        writer.writeUTF(this.hexEncode(buffer, appenable).toString());
+                        writer.write(this.hexEncode(buffer, appenable).toString().getBytes());
                         appenable.delete(0, appenable.length());
                         
                         break;
